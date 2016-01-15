@@ -1,0 +1,6 @@
+ttk entry background changed with fieldbackground,
+
+listbox needs bind to Double not single mouse 1 or gets the previously selected 
+
+ttk notebook widget gotten using
+widget.select() then widget.nametowidget(selected_tab) as selected_tab is a str...

@@ -1,0 +1,53 @@
+
+style
+gm_cfg
+
+form = self.customForm
+form_style = customFormStyle
+form_gm = customFormPack
+
+toolbar_frame = 
+toolbar
+
+form_notebook
+
+self.ref_form
+self.ref_toolbar
+self.ref_notebook
+self.ref_variables
+
+internal tools
+
+variable_checker
+
+
+
+
+form_toolbar_border = 1 / 0		# puts a frame as .__init__
+form_main_border
+form_notebook_border
+
+_border_gm = pack / grid			#geometry manager
+_border_gm_cfg
+_border_cfg
+
+self.border 
+self.border_cfg
+self.border_gm_cfg
+
+
+probably steal terminology from dabo and kivy
+
+In general make the main widget for listbox option menu etc the widget, frame should be in an attribute
+Fix up the notebook syntax
+
+http://kivy.org/docs/
+https://docs.google.com/document/d/1N01Wgj3L1iec8WzjlC3MsAIf2XmOcuTRxCszCYd91uQ/preview#
+
+
+for single widgets,
+
+start
+self.border
+make
+finish

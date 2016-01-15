@@ -1,0 +1,3 @@
+to make a label center, if its gridded use cfg_gridEW and then anchor = center
+
+

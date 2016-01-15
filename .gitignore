@@ -1,0 +1,8 @@
+*.egg-info
+peasoup/__pycache__
+*~
+build/
+dist/
+*.pyc
+.idea/
+
