@@ -755,7 +755,10 @@ class GuiNoteBook(GuiMaker):
                         #~ self.nB.add(widg, text=i, padding='0.1i')
                         #~ print('failed - try - widg parent didnt match the notebook this is an error')
                     #~ except:  # window not created we were passed a class so lets winRef it up
-                    #~ if self.parent==self.nB: 
+                    #~ if self.parent==self.nB:
+                    f = tk.Frame(self.parent)
+                    f.pack()
+                    #import pdb;pdb.set_trace()
                     self.winRef(i,widg,self.nB,None,self.app)
                     self.nB.add(self.widget_ref[i],text=self.tabText[i], padding=self.padding[i],sticky=self.widgSide[i])
                             
