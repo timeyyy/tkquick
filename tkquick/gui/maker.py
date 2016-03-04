@@ -132,7 +132,7 @@ class GuiApi():                         #mixin class, ideally i would attach the
         widget.config(image=imgobj)
         self.toolPhotoObjs.append(imgobj)       # keep a reference or garbage collected
                     
-class GuiMaker(tk.Frame, tk.Toplevel ,GuiApi):
+class GuiMaker(ttk.Frame, tk.Toplevel ,GuiApi):
     """
     self.variables = {}     # Tkinter text Variables
     self.widget_ref = {}    # windows creatd from button calls saved in here
@@ -264,7 +264,7 @@ class GuiMaker(tk.Frame, tk.Toplevel ,GuiApi):
         e.g as a callback command= lambda: self.winRef('my_win',Toplevel,root)
         e.g or here or use self.winRef('pid_tlev',Gui_pidSelector,root,gui_base.configBase)
         """
-        widr=self.widget_ref    #per instance dict, just making it easier to code XD    
+        widr=self.widget_ref    #per instance dict, just making it easier to code XD
         if widr.get(key_name):  #if exists
             if widr[key_name].toplevel == None:pass#let the program go on
             else:return True    # program still open
@@ -354,7 +354,9 @@ class GuiMaker(tk.Frame, tk.Toplevel ,GuiApi):
             This method now works by making a frame, as the classed objects are pre packed. So
             The frame is grided, and the passed class object can be pack/grided
             """
-            subfrm=ttk.Frame(frm)
+            s = ttk.Style()
+            s.configure('test.TFrame', background='green', borderwidth=10)
+            subfrm=ttk.Frame(frm, style='test.TFrame')
             if default_packager: 
                 #~ print('gridding a class object')
                 subfrm.grid(row=h,column=j,**where)
@@ -611,7 +613,7 @@ class MakerScrolledList(tk.Frame):      # used for making sublclasses, adds star
             self.listbox.insert('end', thing) 
         self.styleList()
 
-class MakerOptionMenu(tk.Frame):    #Used for creating Option Menus
+class MakerOptionMenu(tk.Frame):
     """
     Subclass and define a start method
     
@@ -633,14 +635,13 @@ class MakerOptionMenu(tk.Frame):    #Used for creating Option Menus
     or you can use:  def run_command(self, selection): 
     """
     def start(self):
-        pass    #redifine lower
+        raise NotImplementedError
+
     def __init__ (self, parent =None,app=None):
         tk.Frame.__init__(self,parent)
-        #~ self.config(takefocus=True)
         self.app = app
         self.parent=parent
         self.heading = None
-        self.last_selected = '' #internal value for decideding if the value had been updated or not
         self.auto_list_update = True
         self.frm_style = None
         self.conPack = None
@@ -648,7 +649,7 @@ class MakerOptionMenu(tk.Frame):    #Used for creating Option Menus
         if self.frm_style==None:self.config(**cfg_guimaker_frame)
         else:self.config(**self.frm_style)
         if not hasattr(self,'initialValue'):
-            self.initialValue = 'Select a Key'
+            self.initialValue = 'Select a Value...'
         if self.conPack==None:self.pack(expand=1,fill='both')
         else:
             self.pack(**self.conPack)
@@ -664,32 +665,33 @@ class MakerOptionMenu(tk.Frame):    #Used for creating Option Menus
         if self.initialValue:
             self.var.set(self.initialValue)
         with suppress(TypeError):
-            if len(options) == 0:options = ['empty']    # generators have no len method!
-        self.wid = ttk.Menubutton(self, textvariable=self.var)
-        if hasattr(self,'butnOptions'):self.wid.config(**self.butnOptions)
-        self.wid.menu = tk.Menu(self.wid,tearoff=0)
+            options = list(options)
+        self.wid = ttk.Combobox(self, textvariable=self.var)
+        if hasattr(self,'butnOptions'):
+            self.wid.config(**self.butnOptions)
         self.re_populate()
-        self.last_selected = self.var.get() #initalizing value
-        self.wid.config(takefocus=True,menu=self.wid.menu)
-        #~ self.wid.config(**self.butnConf)
+        self.wid.config(state='readonly', takefocus=1, justify='center')
+        #self.wid.config(**self.butnConf)
         self.wid.pack(expand=1, fill='both')
         if self.auto_list_update:
-            self.wid.bind('<Button-1>',lambda e:self.re_populate())
-    
-    def create_entries(self):
-        if self.heading == None:                # no heading
-            #~ print(type(self.options), callable(self.options))
-            if not callable(self.options):
-                self.LIST=self.options          # static list
-            else:self.LIST=self.options()                               #function that changes
-        else:                                   # with heading
-            if not callable(self.options):self.LIST=self.options[:]     # static list   
-            else:   self.LIST=self.options()                            #function that changes                                                      
-            self.LIST.insert(0,self.heading)                    
+            self.wid.bind('<<ComboboxSelected>>', self.re_populate)
 
-    def run_command(self, selection=None):                  # redefine me lower
-        pass
-    
+    def create_entries(self):
+        if self.heading == None:
+            if not callable(self.options):
+                self.LIST=self.options
+            else:
+                self.LIST=self.options()
+        else:
+            if not callable(self.options):
+                self.LIST=self.options[:]
+            else:
+                self.LIST=self.options()
+            self.LIST.insert(0,self.heading)
+
+    def run_command(self, selection=None):
+        raise NotImplementedError
+
     def get_result(self,value): #get result after change, this is default method done by polling the list
         if self.auto_list_update:
             self.re_populate()
@@ -699,33 +701,22 @@ class MakerOptionMenu(tk.Frame):    #Used for creating Option Menus
     def set(self,value):    #TBD need to make this class look like it was the class and not a frame..., ie. factorize it up
         self.var.set(value)
     
-    def re_populate(self):  #http://stackoverflow.com/questions/19794069/tkinter-gui-update-choices-of-an-option-menu-depending-on-a-choice-from-another
+    def re_populate(self, event=None):  #http://stackoverflow.com/questions/19794069/tkinter-gui-update-choices-of-an-option-menu-depending-on-a-choice-from-another
         self.create_entries()   #recreates the self.LIST value
-        #~ menu = self.wid['menu'] #menu
-        menu = self.wid.menu #menu
-        menu.delete(0, 'end')       #delete all                     
-        for string in self.LIST:    #recreate list
-            menu.add_command(label=string, 
-                            command=lambda value=string:
-                                 self.get_result(value))
-    def poll(self): #tbd delete
-        now = self.var.get()
-        if now != self.last_selected:
-            self.get_result(now)
-            self.last_selected = now
-        self.after(250, self.poll)
+        self.wid.config(values=self.LIST)
+        self.wid.selection_clear()
+
 #http://wiki.tcl.tk/20057   # comment on here for mac removing tab visibility
 class GuiNoteBook(GuiMaker):
     """
     pass
     """
-    STYLE_WIDG = {'bg':TIMS_bg}
     headerText=None #only will add a header if its changed
     tabText=[0,1,2,3,4,5,6,7,8,9,10,11,12]  #so no errors if no one sets a tab name
-    widgSide=[tk.N,tk.N,tk.N,tk.N,tk.N,tk.N,tk.N,tk.N,tk.N,tk.N,tk.N]
+    widgSide=['news', 'news', 'news', 'news', 'news', 'news', 'news', 'news', 'news', 'news', 'news', 'news']
     padding=[0,0,0,0,0,0,0,0,0,0,0]
     
-    widgStyle=[STYLE_WIDG,STYLE_WIDG,STYLE_WIDG,STYLE_WIDG,STYLE_WIDG,STYLE_WIDG,STYLE_WIDG,STYLE_WIDG,STYLE_WIDG,STYLE_WIDG,STYLE_WIDG]    # you can also style widgets in class if thats easier
+    widgStyle=[]    # you can also style widgets in class if thats easier
     nbPackConf=None
     nbStyle=None
     #~ def __init__(self,parent=None,app=None):
@@ -736,15 +727,17 @@ class GuiNoteBook(GuiMaker):
         
         #~ self.pack(expand=0)  #change frame (where label is) pack method
     def makeWidgets(self):
-            if self.headerText!=None: ttk.Label(self,text=self.headerText).pack()   # adding label
-            #~ self.current = 0
-            #~ self._pages = {} #either reference by here or the widg
-            self.nB=ttk.Notebook(self)  #nB for notebook as self is a frame
-            #~ self.nB.__init__(self)   #need to initialize the succer fuck that threw me up lol
-            if self.nbPackConf==None:self.nB.pack(expand=1,fill='both')
-            else: self.nB.pack(**self.nbPackConf)
-            if self.nbStyle ==None:self.nB.configure(**c_notebook)
-            else: self.nB.configure(**self.nbStyle)
+            if self.headerText!=None:
+                ttk.Label(self,text=self.headerText).pack()
+            self.nB=ttk.Notebook(self)
+            if self.nbPackConf==None:
+                self.nB.pack(expand=1,fill='both')
+            else:
+                self.nB.pack(**self.nbPackConf)
+            if not self.nbStyle:
+                self.nB.configure(**c_notebook)
+            else:
+                self.nB.configure(**self.nbStyle)
             if self.widgList:
                 for i,widg in enumerate(self.widgList): #list of widgets to be added to pages set in start
                     #~ try:                         # if we pass in a pre created widget made in self this will work otherwise a class which will fire in except
@@ -756,19 +749,25 @@ class GuiNoteBook(GuiMaker):
                         #~ print('failed - try - widg parent didnt match the notebook this is an error')
                     #~ except:  # window not created we were passed a class so lets winRef it up
                     #~ if self.parent==self.nB:
-                    f = tk.Frame(self.parent)
-                    f.pack()
-                    #import pdb;pdb.set_trace()
-                    self.winRef(i,widg,self.nB,None,self.app)
-                    self.nB.add(self.widget_ref[i],text=self.tabText[i], padding=self.padding[i],sticky=self.widgSide[i])
+                    #f = tk.Frame(self.parent)
+                    #f.pack()
+                    # Todo, make this subframe toggleable
+                    subfrm = tk.Frame(self.nB)
+                    subfrm.pack(fill='both', expand=1)
+                    if self.app:
+                        self.widget_ref[i] = widg(subfrm, self.app)
+                    else:
+                        self.widget_ref[i] = widg(subfrm)
+                    self.nB.add(subfrm,
+                                text=self.tabText[i],
+                                padding=self.padding[i],
+                                sticky=self.widgSide[i])
                             
-                    if self.widgStyle[i]:   
+                    with suppress(IndexError):
                         if type(self.widgStyle[i]) == dict:
                             self.widget_ref[i].configure(**self.widgStyle[i])
                         else:
                             self.widget_ref[i].configure(*self.widgStyle[i])
-                    
-    #~ def finish(self):
 
 
 class GuiTreeWidget(GuiMaker):
@@ -1048,11 +1047,14 @@ if __name__ == '__main__':
     
     class option_menu_test(MakerOptionMenu):
         def start(self):
-            self.use_polling = True
-            self.options = [1,2,3,4]
+            self.use_polling = False
+            self.options = self.get
         def run_command(self,value):
-            print(value)    
-    #~ x = option_menu_test(root)
+            print(value)
+        def get(self):
+            a = [999,65465.54326,342]
+            return a
+    x = option_menu_test(root)
 
     root.mainloop()
     
