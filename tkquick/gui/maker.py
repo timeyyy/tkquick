@@ -711,6 +711,7 @@ class GuiNoteBook(GuiMaker):
     """
     pass
     """
+    background='pink'
     headerText=None #only will add a header if its changed
     tabText=[0,1,2,3,4,5,6,7,8,9,10,11,12]  #so no errors if no one sets a tab name
     widgSide=['news', 'news', 'news', 'news', 'news', 'news', 'news', 'news', 'news', 'news', 'news', 'news']
@@ -752,7 +753,7 @@ class GuiNoteBook(GuiMaker):
                     #f = tk.Frame(self.parent)
                     #f.pack()
                     # Todo, make this subframe toggleable
-                    subfrm = tk.Frame(self.nB)
+                    subfrm = tk.Frame(self.nB, background=self.background)
                     subfrm.pack(fill='both', expand=1)
                     if self.app:
                         self.widget_ref[i] = widg(subfrm, self.app)
