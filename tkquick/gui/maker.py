@@ -196,13 +196,13 @@ class GuiMaker(ttk.Frame, tk.Toplevel ,GuiApi):
         menubar = tk.Frame(self, relief=tk.RAISED, bd=2)
         menubar.pack(side=tk.TOP, fill=tk.X)
         for (name, key, items) in self.menuBar:
-            mbutton = Menubutton(menubar, text=name, underline=key)
+            mbutton = tk.Menubutton(menubar, text=name, underline=key)
             mbutton.pack(side='left')
-            pulldown = Menu(mbutton)
+            pulldown = tk.Menu(mbutton)
             self.add_menu_items(pulldown, items)
             mbutton.config(menu=pulldown)
         if self.helpButton:
-            Button(menubar, text    =   'Help', 
+            tk.Button(menubar, text    =   'Help',
             cursor                  =   'gumby',
             relief                  =   tk.FLAT,
             command                 =   self.help).pack(side=tk.RIGHT)
@@ -213,7 +213,7 @@ class GuiMaker(ttk.Frame, tk.Toplevel ,GuiApi):
                 menu.add_separator({})
             elif type(item) == list:    # list: disabled item list
                 for num in item:
-                    menu.entryconfig(num, state=DISABLED)
+                    menu.entryconfig(num, state=tk.DISABLED)
             elif type(item[2]) != list:
                 menu.add_command(   label   = item[0],  # command:
                                     underline = item[1],# add command
@@ -226,7 +226,7 @@ class GuiMaker(ttk.Frame, tk.Toplevel ,GuiApi):
                             menu        = pullover)
     
     def help(self):
-        "override me in subclass"
+        """override me in subclass"""
         showinfo('Help', 'Sorry, no help for ' + self.__class__.__name__)
     
     def varCheck(self,funct,thewidg,dict_name,text=None):   
@@ -253,8 +253,7 @@ class GuiMaker(ttk.Frame, tk.Toplevel ,GuiApi):
             if thewidg.cget('value') == '1':                                # 1 is the default value for radiobutons so.., only set value to the text if a value wasn't already passsed
                 thewidg.config(value=text)
         elif hasattr(thewidg, 'var'):   ## PRE CREATED CLASS METHOD
-            #~ print('PRE CREATED CLASS METHOD')
-            self.variables[dict_name] = thewidg.var 
+            self.variables[dict_name] = thewidg.var
     
     def winRef(self,key_name,widget,parent,lowerparent=None,app=None):  # IS THIS NEEDED TBD .. mm if you spawn a window with xyz.after()   no handle is returned.. so yer need it 
         """
@@ -307,6 +306,7 @@ class GuiMaker(ttk.Frame, tk.Toplevel ,GuiApi):
                 if len(item) == 5:          # Custom form method
                     self._custom_form_evaluate(*item,frm=frm,h=h,j=j)
                 elif len(item) == 4:        # Toolbar method
+                    raise NotImplementedError
                     print('PASS ING, TOOLBAR FORM EVALUATE METHOD NO YET IMPLEMENTED FOR CUSTOM FORM')
                     pass                        #not yet implemented or TBD
                     #~ self._toolbar_form_evaluate(*item,frm=holder[h],h=h,j=j)
@@ -326,12 +326,7 @@ class GuiMaker(ttk.Frame, tk.Toplevel ,GuiApi):
         with custom form method, if using a custom class you can pass and required args in the text field 
         
         """
-        #~ print('ROW', h, 'COL', j)
-        #~ if 'ttk.Bind' in str(funct):
-            #~ print('fsdaf')
-        #~ else:
-            #~ print()
-        if 'tkinter' in str(funct):                         #if a tkinter object 
+        if 'tkinter' in str(funct):                         #if a tkinter object
             if type(text)==list:                            #for Buttons with photos
                 #~ print('image button')
                 imgobj = PImage.open(os.path.join(self.imgdir, text[0]))    
@@ -349,16 +344,12 @@ class GuiMaker(ttk.Frame, tk.Toplevel ,GuiApi):
             else:
                 wid.pack(**where)                               #pack
         elif 'tkinter' not in str(funct):                   #If a class instance is passed in
-            #~ print('class instance recieved: ',funct)
             """
             This method now works by making a frame, as the classed objects are pre packed. So
             The frame is grided, and the passed class object can be pack/grided
             """
-            s = ttk.Style()
-            s.configure('test.TFrame', background='green', borderwidth=10)
-            subfrm=ttk.Frame(frm, style='test.TFrame')
+            subfrm=ttk.Frame(frm)
             if default_packager: 
-                #~ print('gridding a class object')
                 subfrm.grid(row=h,column=j,**where)
             else:
                 try:
@@ -366,7 +357,6 @@ class GuiMaker(ttk.Frame, tk.Toplevel ,GuiApi):
                 except Exception:
                     sys.exit()
             if not self.app:
-                #~ print('app is none')
                 wid = funct(subfrm, **config)   # the functions have to pack them selves, but you pass in the pack locations for its parent which is a frame!
             else: 
                 """
@@ -376,8 +366,7 @@ class GuiMaker(ttk.Frame, tk.Toplevel ,GuiApi):
                 could get side effects sigh
                 """
                 try:         
-                    #~ print('creaing with app')    
-                    wid = funct(subfrm, self.app, **config) 
+                    wid = funct(subfrm, self.app, **config)
                 except TypeError as e:
                     if  '__init__()' in str(e):     #TBD???
                         print('had a fail')
@@ -399,9 +388,7 @@ class GuiMaker(ttk.Frame, tk.Toplevel ,GuiApi):
             self.varCheck(funct,wid,dict_name,text)
             return dict_name,wid,where
     
-    #~ def save(self):
-        #~ print('saving')
-    def tool_bar_start(self):   
+    def tool_bar_start(self):
         """     
         Makes Toolbars, Unlimited # packed how and where u Stipulate
             >>> self.tbarframe = [({'side':'left','fill':Y},c_frame)]
@@ -446,7 +433,6 @@ class GuiMaker(ttk.Frame, tk.Toplevel ,GuiApi):
     def _toolbar_form_evaluate(self,name, action, where, config,frm,h,j):
         if type(name) == list:  #we have an img button
             imgobj = PImage.open(os.path.join(self.imgdir, name[0]))
-            #~ imgobj = imgobj.resize(self.imgsizes)    #dont resize here resize b4.
             imgobj = ImageTk.PhotoImage(imgobj)
             wid=ttk.Button(frm,command=action, image=imgobj, **config)
             wid.pack(**where)
