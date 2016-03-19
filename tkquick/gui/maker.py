@@ -697,7 +697,7 @@ class GuiNoteBook(GuiMaker):
     """
     pass
     """
-    background='pink'
+    background=TIMS_bg
     headerText=None #only will add a header if its changed
     tabText=[0,1,2,3,4,5,6,7,8,9,10,11,12]  #so no errors if no one sets a tab name
     widgSide=['news', 'news', 'news', 'news', 'news', 'news', 'news', 'news', 'news', 'news', 'news', 'news']
