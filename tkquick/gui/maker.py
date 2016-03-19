@@ -504,7 +504,10 @@ class MakerScrolledList(tk.Frame):      # used for making sublclasses, adds star
         self.run_command(self.listbox.get(tk.ANCHOR))                               
     def run_command(self, selection):                       # redefine me lower
         print('You selected:', selection)
-        
+
+    def get(self):
+        return [self.listbox.get(x)[0] for x in self.listbox.curselection()]
+
     def makeWidgets(self, options):
         sbar = tk.Scrollbar(self)
         list = tk.Listbox(self, selectmode='multiple',relief=tk.FLAT, bd=0,highlightthickness=0)
