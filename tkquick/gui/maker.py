@@ -358,7 +358,7 @@ class GuiMaker(ttk.Frame, tk.Toplevel ,GuiApi):
                     sys.exit()
             if not self.app:
                 wid = funct(subfrm, **config)   # the functions have to pack them selves, but you pass in the pack locations for its parent which is a frame!
-            else: 
+            else:
                 """
                 so for nested elements created by customform, if there is an app try and
                 create it with an app otherwise it will fail and default back to normal, 
@@ -379,7 +379,7 @@ class GuiMaker(ttk.Frame, tk.Toplevel ,GuiApi):
                 text()
             wid.caller = self   #easier accessing of caller then using the self.app.fkds.fsd.   #hopefully doesnt clash with self.caller in winRef
             wid.form_name = dict_name
-            
+
         if dict_name and default_packager:          # save widg reference, if default packager is true then toolbar is creating the files and we don't need the refernece here
                 if type(text) != list:                      # do not want a text property set for images
                     self.varCheck(funct,wid,dict_name,text)
@@ -528,6 +528,7 @@ class MakerScrolledList(tk.Frame):      # used for making sublclasses, adds star
             #~ list.bind('<Button-1>', self.handle_list)           # FFS NOT WORKING ON BUTTON 1, gets the one before
             list.bind('<Double-Button-1>', self.handle_list)       # set event handler
         self.listbox = list
+        self.scrollbar = sbar
         self.listbox.bind('<Any-Key>', self.keyPressed, '+')    #first letter keyboard searching
         #~ self.listbox.bind('<<ListboxSelect>>', self.styleList, '+')  #first letter keyboard searching
         self.styleList()
