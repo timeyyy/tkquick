@@ -533,12 +533,12 @@ class MakerScrolledList(tk.Frame):      # used for making sublclasses, adds star
         #~ self.listbox.bind('<<ListboxSelect>>', self.styleList, '+')  #first letter keyboard searching
         self.styleList()
     
-    def styleList(self, event=None):
+    def styleList(self, event=None, c1='peachpuff2', c2='white'):
         for n,dot in enumerate((self.listbox.get(0, 'end'))):
             if n%2 == 0:    #even
-                self.listbox.itemconfig(n, bg='peachpuff2') 
+                self.listbox.itemconfig(n, bg=c1)
             else:
-                self.listbox.itemconfig(n, bg='white')
+                self.listbox.itemconfig(n, bg=c2)
     
     def move_up(self, pos_list=None):
         """ Moves the item at position pos up by one,
