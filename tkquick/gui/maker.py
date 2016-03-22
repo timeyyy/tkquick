@@ -793,9 +793,9 @@ class GuiTreeWidget(GuiMaker):
         ysb.grid(row=0, column=1, sticky='ns')
         xsb.grid(row=1, column=0, sticky='ew')
         #~ self.grid()  
-        self.tree.tag_bind('ttk', '<<TreeviewSelect>>', self.itemClicked)
+        self.tree.tag_bind('ttk', '<<TreeviewSelect>>', self.item_clicked)
     
-    def add_roots(self,parent,items,skip=False):    #Skip will miss the item when its the first entry in a list as that is the name of the parent
+    def add_roots(self, parent, items, skip=False):    #Skip will miss the item when its the first entry in a list as that is the name of the parent
         for item in items:
             if type(item) == str:
                 if not skip:
@@ -805,22 +805,23 @@ class GuiTreeWidget(GuiMaker):
                 oid = self.tree.insert(parent,'end',text=item[0],open=False,tags=('ttk','aList'))   #text set to first element in the list
                 self.add_roots(oid,item,True)   
                 
-    def itemClicked(self,event):
-        self.selectedHierachy=[]
+    def item_clicked(self, event):
+        self.selectedHierachy = []
         ID = self.tree.selection()
-        #~ print(ID)
         text = self.tree.item(ID,'text')
         self.selectedHierachy.insert(0,text)
-        while self.tree.parent(ID):     #Loop through adding text of parent onto list until we reach the parent
-            pID=self.tree.parent(ID)
-            pText=self.tree.item(pID,'text')    
+        # Add text of parent onto list until we reach the start
+        while self.tree.parent(ID):
+            pID = self.tree.parent(ID)
+            pText = self.tree.item(pID,'text')
             self.selectedHierachy.insert(0,pText)
-            ID=pID
-        #~ print(self.selectedHierachy)
+            ID = pID
         self.run_command()
+
     def run_command(self):
-        pass
-         
+        raise NotImplementedError
+
+
 class GuiPanedWindow(tk.Frame):
     sashInfo={} #{where to find parent in form ref:index of sash,pos}
     style=None              #default frame style    #Note here this is actually config not style as using old frame not ttk
