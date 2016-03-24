@@ -126,6 +126,7 @@ def _load_imgs(imgdir):
         imgs[name] = tk.PhotoImage(name, file=f, format="gif89")
 
 def loadStyle(root, preload=None, plastik_folder=None):
+    s = ttk.Style()
     if not preload:
         try:
             _load_imgs(os.path.join('img', 'preload'))
@@ -135,11 +136,11 @@ def loadStyle(root, preload=None, plastik_folder=None):
     if not plastik_folder:
         # todo this code works now... but doesnt work when frozen! the location of the file is a bad
         folder = os.path.join(os.path.dirname(__file__), 'img', 'plastik')
-        print(folder)
         plastik_theme.install(folder)
+    elif plastik_folder in s.theme_names():
+        s.theme_use(plastik_folder)
     else:
         plastik_theme.install(plastik_folder)
-    s = ttk.Style()
     #~ s.theme_use('clam')
     #~ s.theme_use('alt')       #ASS, ok on windows
     #~ s.theme_use('default')   #ASS
@@ -259,10 +260,10 @@ TEST = 'red'
     
 ### DEFAULTS
 ### GUI MENUS
-TIMS_bg='grey93'#'grey93'   
+TIMS_bg='grey93'#'grey93'
 TIMS_fg='grey23'
 TIMS_fg_heading='grey23'
-TIMS_font='calibri 10'
+TIMS_font='calibri 12 bold'
 TIMS_fontB = ' '.join((TIMS_font,'bold'))
 TIMS_heading='helvetica 11 bold'
 TIMS_headingL='helvetica 13 bold'

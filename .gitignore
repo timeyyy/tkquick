@@ -3,6 +3,8 @@ peasoup/__pycache__
 *~
 build/
 dist/
+*.bat
+*.db
 *.pyc
 .idea/
 
