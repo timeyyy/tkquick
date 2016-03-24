@@ -231,7 +231,8 @@ def rate_limited(max_per_second, mode='wait', delay_first_call=False):
 		return rate_limited_function
 	return decorate
 
-def delay_call(seconds):
+# TODO NEED TO ADD THE DELAY_FIRST_CALL LOGIC HERE like rate_limited
+def delay_call(seconds, delay_first_call=True):
 	'''Decorator to delay the runtime of your function,
 	each succesive call to function will refresh the timer,
 	canceling any previous functions

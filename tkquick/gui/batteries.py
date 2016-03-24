@@ -275,7 +275,6 @@ class HotKeyGrabber(tk.Frame):
 	
 	@validate_hk
 	def on_key_press(self,event):
-		#~ pprint(event.__dict__)
 		event = self._parse_tkevent(event)		
 		try:
 			print(self.captured)
