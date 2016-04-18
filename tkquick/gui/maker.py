@@ -553,6 +553,29 @@ class MakerScrolledList(tk.Frame):      # used for making sublclasses, adds star
             self.listbox.insert(pos-1, text)
             self.listbox.select_set(pos-1)
         self.styleList()
+    
+    def set_active(self, offset, start=None):
+        if not start:
+            start = self.listbox.index(tk.ACTIVE)
+        self.listbox.selection_clear(start)
+        new = start + offset
+        self.listbox.see(new)
+        self.listbox.select_set(new)
+        self.listbox.activate(new)
+        # Loop around if we cannot get anything
+        if not self.get():
+            if offset > 0:
+                self.set_active(start=1, offset=0)
+            else:
+                length = len(self.listbox.get(0, tk.END))
+                self.set_active(start=0, 
+                        offset=length-1)
+    
+    def select_up(self):
+        self.set_active(-1)
+
+    def select_down(self):
+        self.set_active(+1)
         
     def move_down(self, pos_list=None):
         """ Moves the item at position pos down by one,
@@ -1065,4 +1088,4 @@ if __name__ == '__main__':
             #~ self.panesList=[(l,v,[(l,v,[(r,v,None)])])]
 
 
-    
+
