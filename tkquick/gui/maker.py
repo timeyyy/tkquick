@@ -689,6 +689,8 @@ class MakerOptionMenu(tk.Frame):
         if self.auto_list_update:
             self.wid.bind('<<ComboboxSelected>>', self.re_populate)
 
+        self.var.trace('w', self.handle_change)
+
     def create_entries(self):
         if self.heading == None:
             if not callable(self.options):
@@ -701,9 +703,13 @@ class MakerOptionMenu(tk.Frame):
             else:
                 self.LIST=self.options()
             self.LIST.insert(0,self.heading)
+    
+    def handle_change(self, *trace_args):
+        value = self.var.get()
+        self.run_command(value)
 
     def run_command(self, selection=None):
-        raise NotImplementedError
+        pass
 
     def get_result(self,value): #get result after change, this is default method done by polling the list
         if self.auto_list_update:
@@ -927,11 +933,27 @@ class GuiPanedWindow(tk.Frame):
                 #~ self.masterPane.paneconfigure(pane,{'sticky':'nsew'})
 
 def center_window(window, width=None, height=None):
+    assert width and height or not width and not height
     ws = window.winfo_screenwidth()
     hs = window.winfo_screenheight()
+    # Get width and height from widgeth
+    if not width and not height:
+        # We have to draw the widget to get its dims, 
+        # Todo -> Best way is move offscreen and draw..
+        # Making Transparent as workaround (may not work on some linux boxes)
+        old_transparency = window.attributes('-alpha')
+        # TODO Transparency not working fuck me 
+        window.attributes('-alpha', 0.5)   
+        window.update_idletasks()
+        window.withdraw()
+        width = window.winfo_width()
+        height = window.winfo_height()
     x = (ws/2) - (width/2)
     y = (hs/2) - (height/2)
     window.geometry('%dx%d+%d+%d' % (width, height, x, y))
+    with suppress(UnboundLocalError):
+        window.attributes('-alpha', old_transparency)   
+        window.deiconify()
 
 ###############################################################################
 # Customize for Tk 8.0 main window menu bar, instead of a frame
