@@ -7,4 +7,5 @@ dist/
 *.db
 *.pyc
 .idea/
+tags
 
