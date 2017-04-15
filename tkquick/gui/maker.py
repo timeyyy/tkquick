@@ -264,6 +264,7 @@ class GuiMaker(ttk.Frame, tk.Toplevel ,GuiApi):
         e.g or here or use self.winRef('pid_tlev',Gui_pidSelector,root,gui_base.configBase)
         """
         widr=self.widget_ref    #per instance dict, just making it easier to code XD
+        widr[key_name].caller = self    #easy reference of the caller of the window
         if widr.get(key_name):  #if exists
             if widr[key_name].toplevel == None:pass#let the program go on
             else:return True    # program still open
@@ -459,10 +460,11 @@ class GuiMaker(ttk.Frame, tk.Toplevel ,GuiApi):
                 text    = self.__class__.__name__,
                 cursor = 'crosshair')
         name.pack(expand=1, fill='both', side='top')
-    
+
     def finish(self):
         pass
-        
+
+
 class MakerRadioButton(tk.Frame):
     """
     Set self.options like [()], tuple pair of text and value
@@ -470,21 +472,21 @@ class MakerRadioButton(tk.Frame):
     def __init__(self, parent=None):
         tk.Frame.__init__(self, parent)
         self.start()
-        self.pack(expand=1, fill='both')                   # make me expandable
-        
+        self.pack(expand=1, fill='both')
+
         self.makeWidgets()
+
     def start(self):
         pass
+
     def makeWidgets(self):
         v = tk.StringVar()
-        for text,value in self.options: 
-            b = Radiobutton(self, text=text, variable=v, value=value)
-            b.pack(anchor=W)
+        for text,value in self.options:
+            b = ttk.Radiobutton(self, text=text, variable=v, value=value)
+            b.pack(anchor=tk.W)
         self.var = v
-    #~ def handleEvent(self, event):                        
-            #~ result = self.var.get()                                         
-            #~ self.run_command(result)
-            
+
+
 class MakerScrolledList(tk.Frame):      # used for making sublclasses, adds start method 
     result = []
     use_default_event_handler = False

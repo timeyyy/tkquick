@@ -167,6 +167,10 @@ def ttk_manual(style, widgets):
         #~ print(s.layout(item))
 
 
+'''
+    THESE FUNCTIONS BELOW HAVE BEEN MOVED TO TIMS TOOLS
+'''
+
 def rate_limited(max_per_second, mode='wait', delay_first_call=False):
     """
     Decorator that make functions not be called faster than
