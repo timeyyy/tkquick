@@ -1,30 +1,16 @@
 from setuptools import setup, find_packages # Always prefer setuptools over distutils
-from codecs import open # To use a consistent encoding
 from os import path
-here = path.abspath(path.dirname(__file__))
-# Get the long description from the relevant file
-with open(path.join(here, 'DESCRIPTION.rst'), encoding='utf-8') as f:
-	long_description = f.read()
 setup(
 	name = 'tkquick',
 	# Versions should comply with PEP440. For a discussion on single-sourcing
 	# the version across setup.py and the project code, see
 	# https://packaging.python.org/en/latest/single_source_version.html
-	version='0.1.2',
-	
+	version='0.1.3',
 	description = 'Collection of tools for building Gui Desktop Applications with tkinter',
-	long_description =long_description,
-	
-	# The project's main homepage.
 	url = 'https://github.com/timeyyy/tkquick',
-	
-	# Author details
 	author='timeyyy',
 	author_email='tim_eichler@hotmail.com',
-	
-	# Choose your license
 	license='BSD3',
-	
 	# See https://pypi.python.org/pypi?%3Aaction=list_classifiers
 	classifiers=[
 		# How mature is this project? Common values are
